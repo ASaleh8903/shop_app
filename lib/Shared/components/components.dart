@@ -1,6 +1,7 @@
 
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../layout/shop_app/cubit/cubit.dart';
@@ -10,7 +11,7 @@ import '../styles/colors.dart';
 
 Widget defaultButton({
   double width = double.infinity,
-  Color background = Colors.blue,
+  Color background = defaultColor,
   bool isUpperCase = true,
   double radius = 3.0,
   required Function function,
@@ -51,39 +52,141 @@ Widget defaultTextButton({
       ),
     );
 
-Widget defaultFormField({
-  required TextEditingController controller,
-  required TextInputType type,
-  Function? onSubmit,
-  Function? onChange,
-  Function? onTap,
-  bool isPassword = false,
-  required Function validate,
-  required String label,
-  required IconData prefix,
-  IconData? suffix,
-  Function? suffixPressed,
-  bool isClickable = true,
-}) =>
-    TextFormField(
+// Widget defaultFormField({
+//   required TextEditingController controller,
+//   required TextInputType type,
+//   Function? onSubmit,
+//   Function? onChange,
+//   Function? onTap,
+//   bool isPassword = false,
+//   required String label,
+//   required IconData prefix,
+//   IconData? suffix,
+//   Function? suffixPressed,
+//   bool isClickable = true,
+//   required final String? Function(String?) validate,
+// }) =>
+//     TextFormField(
+//       controller: controller,
+//       keyboardType: type,
+//       obscureText: isPassword,
+//       enabled: isClickable,
+//       onFieldSubmitted: (s){
+//         onSubmit!(s);
+//       },
+//       onChanged: (s){
+//         onChange!(s);
+//       },
+//       onTap: (){
+//         onTap!();
+//       },
+//       validator: (value){
+//         validate(value);
+//        return;
+//         },
+//       decoration: InputDecoration(
+//         labelText: label,
+//         prefixIcon: Icon(
+//           prefix,
+//         ),
+//         suffixIcon: suffix != null
+//             ? IconButton(
+//             onPressed: (){suffixPressed!();},
+//             icon: Icon(
+//             suffix,
+//           ),
+//         )
+//             : null,
+//         border: OutlineInputBorder(),
+//       ),
+//     );
+
+class defaultFormField extends StatelessWidget {
+  final BuildContext context;
+  final bool isClickable = true;
+  final TextInputType type;
+  final TextEditingController controller;
+  final dynamic label;
+  final String? hintText;
+  final String? errorText;
+  final TextDirection? textDirection;
+  final IconData? prefix;
+  final Widget? textFormFieldIcon;
+  final String? initialValue;
+  final TextInputType? keyboardType;
+  final Function(String)? onSubmit;
+  final Function(String)? onChange;
+  final Function()? onTap;
+  final String? Function(String?) validate;
+  final bool isPassword;
+  final bool? enabled;
+  final IconData? suffix;
+  final Function()? suffixPressed;
+  final BoxConstraints? constraints;
+  final TextAlign? textAlign;
+  final int? maxLines;
+  final FocusNode? focusNode;
+  final bool autofocus;
+  final List<TextInputFormatter>? inputFormatters;
+  final TextCapitalization textCapitalization;
+  final double radius;
+
+
+  const defaultFormField({
+    super.key,
+    required this.context,
+    required this.controller,
+    required this.validate,
+    this.focusNode,
+    this.textDirection,
+    this.errorText,
+    this.keyboardType = TextInputType.text,
+    this.label,
+    this.radius = 5,
+    this.textFormFieldIcon,
+    this.autofocus = false,
+    this.prefix,
+    this.initialValue,
+    this.onSubmit,
+    this.onChange,
+    this.onTap,
+    this.enabled,
+    this.suffix,
+    this.suffixPressed,
+    this.constraints,
+    this.textAlign = TextAlign.start,
+    this.maxLines,
+    this.hintText,
+    this.isPassword = false,
+    this.inputFormatters,
+    this.textCapitalization = TextCapitalization.words, required this.type,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+
+
+    final hasFocus = controller.text.isNotEmpty;
+    return TextFormField(
+      maxLines: 1,
       controller: controller,
-      keyboardType: type,
+      keyboardType: keyboardType,
       obscureText: isPassword,
+      textDirection: textDirection,
+      textAlign: textAlign!,
+      onFieldSubmitted: onSubmit,
       enabled: isClickable,
-      onFieldSubmitted: (s){
-        onSubmit!(s);
-      },
-      onChanged: (s){
-        onChange!(s);
-      },
-      onTap: (){
-        onTap!();
-      },
-      validator: (s){
-        validate(s);
-        return null;
-        },
-      decoration: InputDecoration(
+      autofocus: autofocus,
+      onChanged: onChange,
+      focusNode: focusNode,
+      onTap: onTap,
+      // maxLines: maxLines,
+      validator: validate,
+      inputFormatters: inputFormatters,
+      textCapitalization: textCapitalization,
+      textAlignVertical: TextAlignVertical.center,
+      initialValue: initialValue,
+        decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(
           prefix,
@@ -99,6 +202,10 @@ Widget defaultFormField({
         border: OutlineInputBorder(),
       ),
     );
+
+  }
+}
+
 
 Widget buildTaskItem(Map model, context) => Dismissible(
   key: Key(model['id'].toString()),

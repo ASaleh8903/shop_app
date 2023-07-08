@@ -21,8 +21,8 @@ class ProductsScreen extends StatelessWidget {
         return ConditionalBuilder(
           condition: ShopCubit.get(context).homeModel != null &&
               ShopCubit.get(context).categoriesModel != null,
-          builder: (context) => builderWidget(ShopCubit.get(context).homeModel,
-              ShopCubit.get(context).categoriesModel, context),
+          builder: (context) => builderWidget(ShopCubit.get(context).homeModel!,
+              ShopCubit.get(context).categoriesModel!, context),
           fallback: (context) => Center(
             child: CircularProgressIndicator(),
           ),
@@ -39,10 +39,10 @@ class ProductsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CarouselSlider(
-              items: model.data.banners
+              items: model.data?.banners
                   .map(
                     (e) => Image(
-                  image: NetworkImage(e.image),
+                  image: NetworkImage('${e.image}'),
                   fit: BoxFit.cover,
                   width: double.infinity,
                 ),
@@ -121,9 +121,9 @@ class ProductsScreen extends StatelessWidget {
                 crossAxisSpacing: 1.0,
                 childAspectRatio: 1 / 1.80,
                 children: List.generate(
-                  model.data.products.length,
+                  model.data!.products.length,
                       (index) =>
-                      buildGridProduct(model.data.products[index], context),
+                      buildGridProduct(model.data!.products[index], context),
                 ),
               ),
             ),
@@ -135,7 +135,7 @@ class ProductsScreen extends StatelessWidget {
     alignment: AlignmentDirectional.bottomCenter,
     children: [
       Image(
-        image: NetworkImage(model.image),
+        image: NetworkImage('${model.image}'),
         height: 100.0,
         width: 100.0,
         fit: BoxFit.cover,
@@ -146,7 +146,7 @@ class ProductsScreen extends StatelessWidget {
         ),
         width: 100.0,
         child: Text(
-          model.name,
+          '${model.name}',
           textAlign: TextAlign.center,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -167,7 +167,7 @@ class ProductsScreen extends StatelessWidget {
           alignment: AlignmentDirectional.bottomStart,
           children: [
             Image(
-              image: NetworkImage(model.image),
+              image: NetworkImage('${model.image}'),
               width: double.infinity,
               height: 200.0,
             ),
@@ -193,8 +193,7 @@ class ProductsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                model.name,
-                maxLines: 2,
+                '${model.name}',
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 14.0,

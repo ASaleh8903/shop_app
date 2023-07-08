@@ -5,8 +5,8 @@ class SearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
+    return  Scaffold(
+      body: Text(
         'Categories Screen',
         style: TextStyle(
             fontSize: 50.0,
@@ -14,5 +14,6 @@ class SearchScreen extends StatelessWidget {
         ),
       ),
     );
+
   }
 }

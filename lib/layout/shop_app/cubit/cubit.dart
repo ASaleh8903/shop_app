@@ -17,7 +17,7 @@ import '../../../Shared/network/remote/dio_helper.dart';
 class ShopCubit extends Cubit<ShopStates> {
   final DioHelper dioHelper;
   final CacheHelper cacheHelper;
-  late HomeModel homeModel;
+   HomeModel? homeModel;
   ShopCubit({required this.dioHelper,required this.cacheHelper}) : super(ShopInitialState());
 
 
@@ -50,12 +50,7 @@ class ShopCubit extends Cubit<ShopStates> {
     ).then((value) {
       homeModel = HomeModel.fromJson(value.data);
 
-      //print(homeModel.data.banners[0].image);
-      //print(homeModel.status);
 
-
-
-      //print(favorites.toString());
 
       emit(ShopSuccessHomeDataState());
     }).catchError((error) {
@@ -64,7 +59,7 @@ class ShopCubit extends Cubit<ShopStates> {
     });
   }
 
-  late CategoriesModel categoriesModel;
+  CategoriesModel? categoriesModel;
 
   void getCategories() {
     DioHelper.getData(
@@ -89,7 +84,7 @@ class ShopCubit extends Cubit<ShopStates> {
       token: token,
     ).then((value) {
       userModel = ShopLoginModel.fromJson(value.data);
-      printFullText(userModel.data.name);
+      printFullText(userModel.data?.name);
 
       emit(ShopSuccessUserDataState(userModel));
     }).catchError((error) {
@@ -115,7 +110,7 @@ class ShopCubit extends Cubit<ShopStates> {
       },
     ).then((value) {
       userModel = ShopLoginModel.fromJson(value.data);
-      printFullText(userModel.data.name);
+      printFullText(userModel.data?.name);
 
       emit(ShopSuccessUpdateUserState(userModel));
     }).catchError((error) {

@@ -24,30 +24,34 @@ class ShopLoginScreen extends StatelessWidget
         listener: (context, state) {
           if (state is ShopLoginSuccessState)
           {
-            if (state.loginModel.status)
+            final loginModel = state.loginModel;
+
+            if (loginModel != null && loginModel.status != null)
             {
-              print(state.loginModel.message);
-              print(state.loginModel.data.token);
-
-              CacheHelper.saveData(
-                key: 'token',
-                value: state.loginModel.data.token,
-              ).then((value)
+              if (loginModel.status!)
               {
-                token = state.loginModel.data.token!;
+                print(loginModel.message);
+                print(loginModel.data?.token);
 
-                navigateAndFinish(
-                  context,
-                  ShopLayout(),
+                CacheHelper.saveData(
+                  key: 'token',
+                  value: loginModel.data?.token,
+                ).then((value)
+                {
+                  token = loginModel.data!.token!;
+
+                  navigateAndFinish(
+                    context,
+                    ShopLayout(),
+                  );
+                });
+              } else {
+                print(loginModel.message);
+                showToast(
+                  text: loginModel.message!,
+                  state: ToastStates.ERROR,
                 );
-              });
-            } else {
-              print(state.loginModel.message);
-
-              showToast(
-                text: state.loginModel.message,
-                state: ToastStates.ERROR,
-              );
+              }
             }
           }
         },
@@ -78,44 +82,82 @@ class ShopLoginScreen extends StatelessWidget
                         SizedBox(
                           height: 30.0,
                         ),
+                        // defaultFormField(
+                        //   controller: emailController,
+                        //   type: TextInputType.emailAddress,
+                        //   validate: (String? value) {
+                        //     if (value!.isEmpty) {
+                        //       return 'please enter your email address';
+                        //     }
+                        //   },
+                        //   label: 'Email Address',
+                        //   prefix: Icons.email_outlined,
+                        // ),
                         defaultFormField(
-                          controller: emailController,
+                            context: context,
+                            controller: emailController,
+                            validate: (String? value) {
+                                 if (value!.isEmpty) {
+                                   return 'please enter your email address';
+                                 }
+                              },
                           type: TextInputType.emailAddress,
-                          validate: (String value) {
-                            if (value.isEmpty) {
-                              return 'please enter your email address';
-                            }
-                          },
-                          label: 'Email Address',
+                          label: 'e-mail',
                           prefix: Icons.email_outlined,
                         ),
                         SizedBox(
                           height: 15.0,
                         ),
+                        // defaultFormField(
+                        //   controller: passwordController,
+                        //   type: TextInputType.visiblePassword,
+                        //   suffix: ShopLoginCubit.get(context).suffix,
+                        //   onSubmit: (value) {
+                        //     if (formKey.currentState!.validate()) {
+                        //       ShopLoginCubit.get(context).userLogin(
+                        //         email: emailController.text,
+                        //         password: passwordController.text,
+                        //       );
+                        //     }
+                        //   },
+                        //   isPassword: ShopLoginCubit.get(context).isPassword,
+                        //   suffixPressed: () {
+                        //     ShopLoginCubit.get(context)
+                        //         .changePasswordVisibility();
+                        //   },
+                        //   validate: (String? value) {
+                        //     if (value!.isEmpty) {
+                        //       return 'password is too short';
+                        //     }
+                        //   },
+                        //   label: 'Password',
+                        //   prefix: Icons.lock_outline,
+                        // ),
                         defaultFormField(
-                          controller: passwordController,
-                          type: TextInputType.visiblePassword,
-                          suffix: ShopLoginCubit.get(context).suffix,
-                          onSubmit: (value) {
-                            if (formKey.currentState!.validate()) {
+                            context: context,
+                            type: TextInputType.visiblePassword,
+                            controller: passwordController,
+                            validate: (String? value) {
+                               if (value!.isEmpty) {
+                                 return 'please enter your password';
+                                   }
+                           },
+                            onSubmit: (value) {
+                              if (formKey.currentState!.validate()) {
                               ShopLoginCubit.get(context).userLogin(
                                 email: emailController.text,
-                                password: passwordController.text,
-                              );
-                            }
-                          },
+                                 password: passwordController.text,
+                                 );
+                              }
+                           },
+                          suffix: ShopLoginCubit.get(context).suffix,
                           isPassword: ShopLoginCubit.get(context).isPassword,
-                          suffixPressed: () {
-                            ShopLoginCubit.get(context)
-                                .changePasswordVisibility();
-                          },
-                          validate: (String value) {
-                            if (value.isEmpty) {
-                              return 'password is too short';
-                            }
-                          },
                           label: 'Password',
-                          prefix: Icons.lock_outline,
+                            prefix: Icons.lock_outline,
+                            suffixPressed: () {
+                              ShopLoginCubit.get(context)
+                                  .changePasswordVisibility();
+                            }
                         ),
                         SizedBox(
                           height: 30.0,
@@ -133,6 +175,7 @@ class ShopLoginScreen extends StatelessWidget
                             },
                             text: 'login',
                             isUpperCase: true,
+                            background: Colors.deepOrange
                           ),
                           fallback: (context) =>
                               Center(child: CircularProgressIndicator()),
