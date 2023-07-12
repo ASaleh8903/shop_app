@@ -16,18 +16,17 @@ class ProductsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<ShopCubit, ShopStates>(
       listener: (context, state) {},
-
-      builder: (context, state) {
-        return ConditionalBuilder(
-          condition: ShopCubit.get(context).homeModel != null &&
-              ShopCubit.get(context).categoriesModel != null,
-          builder: (context) => builderWidget(ShopCubit.get(context).homeModel!,
-              ShopCubit.get(context).categoriesModel!, context),
-          fallback: (context) => Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
-      },
+        builder: (context, state) {
+          return ConditionalBuilder(
+            condition: ShopCubit.get(context).homeModel != null &&
+                ShopCubit.get(context).categoriesModel != null,
+            builder: (context) => builderWidget(ShopCubit.get(context).homeModel!,
+                ShopCubit.get(context).categoriesModel!, context),
+            fallback: (context) => Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        },
     );
   }
 
@@ -223,6 +222,10 @@ class ProductsScreen extends StatelessWidget {
                     ),
                   Spacer(),
                   IconButton(
+                    onPressed: () {
+                      ShopCubit.get(context).changeFavorites(model.id!);
+                      print(model.id);
+                    },
                     icon: CircleAvatar(
                       radius: 15.0,
                       child: Icon(
@@ -230,7 +233,11 @@ class ProductsScreen extends StatelessWidget {
                         size: 14.0,
                         color: Colors.white,
                       ),
-                    ), onPressed: () {},
+                      backgroundColor:
+                      ShopCubit.get(context).favorites[model.id]!
+                          ? defaultColor
+                          : Colors.grey,
+                    ),
                   ),
                 ],
               ),

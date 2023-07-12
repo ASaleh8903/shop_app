@@ -28,17 +28,17 @@ class ShopLoginScreen extends StatelessWidget
 
             if (loginModel != null && loginModel.status != null)
             {
-              if (loginModel.status!)
+              if (state.loginModel.status!)
               {
-                print(loginModel.message);
-                print(loginModel.data?.token);
+                print(state.loginModel.message);
+                print(state.loginModel.data?.token);
 
                 CacheHelper.saveData(
                   key: 'token',
-                  value: loginModel.data?.token,
+                  value: state.loginModel.data?.token,
                 ).then((value)
                 {
-                  token = loginModel.data!.token!;
+                  token = state.loginModel.data!.token!;
 
                   navigateAndFinish(
                     context,
