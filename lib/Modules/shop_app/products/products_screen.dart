@@ -3,8 +3,9 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../Model/categories_model/categories_model.dart';
-import '../../../Model/home_model/home_model.dart';
+
+import '../../../Model/shop_app/categories_model/categories_model.dart';
+import '../../../Model/shop_app/home_model/home_model.dart';
 import '../../../Shared/components/components.dart';
 import '../../../Shared/styles/colors.dart';
 import '../../../layout/shop_app/cubit/cubit.dart';

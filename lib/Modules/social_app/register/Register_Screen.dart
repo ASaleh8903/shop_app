@@ -5,14 +5,12 @@ class ShopRegisterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-     body: Center(
-        child: Text(
-          'Register Screen',
-          style: TextStyle(
-              fontSize: 25.0,
-              fontWeight: FontWeight.bold
-          ),
+    return Center(
+      child: Text(
+        'Categories Screen',
+        style: TextStyle(
+            fontSize: 50.0,
+            fontWeight: FontWeight.bold
         ),
       ),
     );

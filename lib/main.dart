@@ -1,10 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'Model/home_model/home_model.dart';
+
 import 'Modules/shop_app/login/login_screen.dart';
 import 'Modules/shop_app/on_boarding/on_boarding.dart';
 import 'Shared/bloc_observer.dart';
+import 'Shared/components/constans.dart';
 import 'Shared/cubit/cubit/app_cubit.dart';
 import 'Shared/cubit/states/states.dart';
 import 'Shared/network/local/cache_helper.dart';
@@ -12,6 +13,8 @@ import 'Shared/network/remote/dio_helper.dart';
 import 'Shared/styles/themes.dart';
 import 'layout/shop_app/cubit/cubit.dart';
 import 'layout/shop_app/shop_app_layout.dart';
+import 'layout/social_app/cubit/cubit.dart';
+import 'layout/social_app/social_layout.dart';
 
 void main() async {
   // بيتأكد ان كل حاجه هنا في الميثود خلصت و بعدين يتفح الابلكيشن
@@ -24,25 +27,38 @@ void main() async {
 
   bool? isDark = CacheHelper.getData(key: 'isDark');
 
+  uId = CacheHelper.getData(key: 'uId');
+
   Widget widget;
 
   bool? onBoarding = CacheHelper.getData(key: 'onBoarding');
   String? token = CacheHelper.getData(key: 'token');
   print(token);
 
-  if(onBoarding != null)
+  // if(onBoarding != null)
+  // {
+  //   if(token!= null) widget = ShopLayout();
+  //   else widget = ShopLoginScreen();
+  // } else
+  // {
+  //   widget = OnBoardingScreen();
+  // }
+
+  if(uId != null)
   {
-    if(token!= null) widget = ShopLayout();
-    else widget = ShopLoginScreen();
+    widget = SocialLayout();
   } else
   {
-    widget = OnBoardingScreen();
+    widget = SocialLoginScreen() as Widget;
   }
 
   runApp(MyApp(
     isDark: isDark,
     startWidget: widget,
   ));
+}
+
+class SocialLoginScreen {
 }
 
 // Stateless
@@ -70,6 +86,7 @@ class MyApp extends StatelessWidget
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+
         BlocProvider(
           create: (BuildContext context) => AppCubit()
             ..changeAppMode(
@@ -78,6 +95,9 @@ class MyApp extends StatelessWidget
         ),
         BlocProvider(
           create: (BuildContext context) => shopCubit..getHomeData()..getCategories()..getUserData(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => SocialCubit()..getUserData(),
         ),
       ],
       child: BlocConsumer<AppCubit, AppStates>(
