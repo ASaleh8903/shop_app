@@ -1,7 +1,6 @@
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'Model/home_model/home_model.dart';
+
 import 'Modules/shop_app/login/login_screen.dart';
 import 'Modules/shop_app/on_boarding/on_boarding.dart';
 import 'Shared/bloc_observer.dart';
@@ -21,7 +20,6 @@ void main() async {
   DioHelper.init();
   await CacheHelper.init();
 
-
   bool? isDark = CacheHelper.getData(key: 'isDark');
 
   Widget widget;
@@ -30,12 +28,12 @@ void main() async {
   String? token = CacheHelper.getData(key: 'token');
   print(token);
 
-  if(onBoarding != null)
-  {
-    if(token!= null) widget = ShopLayout();
-    else widget = ShopLoginScreen();
-  } else
-  {
+  if (onBoarding != null) {
+    if (token != null)
+      widget = ShopLayout();
+    else
+      widget = ShopLoginScreen();
+  } else {
     widget = OnBoardingScreen();
   }
 
@@ -50,21 +48,20 @@ void main() async {
 
 // class MyApp
 
-class MyApp extends StatelessWidget
-{
+class MyApp extends StatelessWidget {
   // constructor
   // build
-    final bool? isDark;
-    final Widget? startWidget;
+  final bool? isDark;
+  final Widget? startWidget;
 
   MyApp({
-     this.isDark,
-     this.startWidget,
+    this.isDark,
+    this.startWidget,
   });
-    final shopCubit = ShopCubit(
-      dioHelper: DioHelper(),
-      cacheHelper: CacheHelper(),
-    );
+  final shopCubit = ShopCubit(
+    dioHelper: DioHelper(),
+    cacheHelper: CacheHelper(),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -73,11 +70,14 @@ class MyApp extends StatelessWidget
         BlocProvider(
           create: (BuildContext context) => AppCubit()
             ..changeAppMode(
-              fromShared: isDark?? false,
+              fromShared: isDark ?? false,
             ),
         ),
         BlocProvider(
-          create: (BuildContext context) => shopCubit..getHomeData()..getCategories()..getUserData(),
+          create: (BuildContext context) => shopCubit
+            ..getHomeData()
+            ..getCategories()
+            ..getUserData(),
         ),
       ],
       child: BlocConsumer<AppCubit, AppStates>(
@@ -88,7 +88,7 @@ class MyApp extends StatelessWidget
             theme: lightTheme,
             darkTheme: darkTheme,
             themeMode:
-            AppCubit.get(context).isDark ? ThemeMode.dark : ThemeMode.light,
+                AppCubit.get(context).isDark ? ThemeMode.dark : ThemeMode.light,
             home: startWidget,
           );
         },

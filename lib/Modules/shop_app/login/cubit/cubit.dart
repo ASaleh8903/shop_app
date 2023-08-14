@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/Modules/shop_app/login/cubit/states.dart';
-import '../../../../Model/login_model/login_model.dart';
+
+import '../../../../Model/shop_app/login_model/login_model.dart';
 import '../../../../Shared/network/end_points.dart';
 import '../../../../Shared/network/remote/dio_helper.dart';
 

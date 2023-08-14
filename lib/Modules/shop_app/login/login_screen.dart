@@ -1,7 +1,7 @@
-
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../Shared/components/components.dart';
 import '../../../Shared/components/constans.dart';
 import '../../../Shared/network/local/cache_helper.dart';
@@ -9,49 +9,36 @@ import '../../../layout/shop_app/shop_app_layout.dart';
 import '../Register/Register_Screen.dart';
 import 'cubit/cubit.dart';
 import 'cubit/states.dart';
-class ShopLoginScreen extends StatelessWidget
-{
+
+class ShopLoginScreen extends StatelessWidget {
   final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   @override
-  Widget build(BuildContext context)
-  {
+  Widget build(BuildContext context) {
     return BlocProvider(
       create: (BuildContext context) => ShopLoginCubit(),
       child: BlocConsumer<ShopLoginCubit, ShopLoginStates>(
         listener: (context, state) {
-          if (state is ShopLoginSuccessState)
-          {
-            final loginModel = state.loginModel;
-
-            if (loginModel != null && loginModel.status != null)
-            {
-              if (loginModel.status!)
-              {
-                print(loginModel.message);
-                print(loginModel.data?.token);
-
-                CacheHelper.saveData(
-                  key: 'token',
-                  value: loginModel.data?.token,
-                ).then((value)
-                {
-                  token = loginModel.data!.token!;
-
-                  navigateAndFinish(
-                    context,
-                    ShopLayout(),
-                  );
-                });
-              } else {
-                print(loginModel.message);
-                showToast(
-                  text: loginModel.message!,
-                  state: ToastStates.ERROR,
-                );
-              }
+          // final loginModel = state.loginModel;
+          if (state is ShopLoginSuccessState) {
+            if (state.loginModel.status) {
+              print(state.loginModel.message);
+              print(state.loginModel.data!.token);
+              CacheHelper.saveData(
+                key: 'token',
+                value: state.loginModel.data!.token,
+              ).then((value) {
+                token = state.loginModel.data!.token;
+                navigateAndFinish(context, ShopLayout());
+              });
+            } else {
+              print(state.loginModel.message);
+              showToast(
+                text: state.loginModel.message,
+                state: ToastState.ERROR,
+              );
             }
           }
         },
@@ -69,15 +56,17 @@ class ShopLoginScreen extends StatelessWidget
                       children: [
                         Text(
                           'LOGIN',
-                          style: Theme.of(context).textTheme.headline4?.copyWith(
-                            color: Colors.black,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.headline4?.copyWith(
+                                    color: Colors.black,
+                                  ),
                         ),
                         Text(
                           'Login now to browse our hot offers',
-                          style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                            color: Colors.grey,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyText1?.copyWith(
+                                    color: Colors.grey,
+                                  ),
                         ),
                         SizedBox(
                           height: 30.0,
@@ -94,13 +83,14 @@ class ShopLoginScreen extends StatelessWidget
                         //   prefix: Icons.email_outlined,
                         // ),
                         defaultFormField(
-                            context: context,
-                            controller: emailController,
-                            validate: (String? value) {
-                                 if (value!.isEmpty) {
-                                   return 'please enter your email address';
-                                 }
-                              },
+                          context: context,
+                          controller: emailController,
+                          validate: (String? value) {
+                            if (value!.isEmpty) {
+                              return 'please enter your email address';
+                            }
+                            return null;
+                          },
                           type: TextInputType.emailAddress,
                           label: 'e-mail',
                           prefix: Icons.email_outlined,
@@ -138,34 +128,12 @@ class ShopLoginScreen extends StatelessWidget
                             type: TextInputType.visiblePassword,
                             controller: passwordController,
                             validate: (String? value) {
-                               if (value!.isEmpty) {
-                                 return 'please enter your password';
-                                   }
-                           },
-                            onSubmit: (value) {
-                              if (formKey.currentState!.validate()) {
-                              ShopLoginCubit.get(context).userLogin(
-                                email: emailController.text,
-                                 password: passwordController.text,
-                                 );
+                              if (value!.isEmpty) {
+                                return 'please enter your password';
                               }
-                           },
-                          suffix: ShopLoginCubit.get(context).suffix,
-                          isPassword: ShopLoginCubit.get(context).isPassword,
-                          label: 'Password',
-                            prefix: Icons.lock_outline,
-                            suffixPressed: () {
-                              ShopLoginCubit.get(context)
-                                  .changePasswordVisibility();
-                            }
-                        ),
-                        SizedBox(
-                          height: 30.0,
-                        ),
-                        ConditionalBuilder(
-                          condition: state is! ShopLoginLoadingState,
-                          builder: (context) => defaultButton(
-                            function: () {
+                              return null;
+                            },
+                            onSubmit: (value) {
                               if (formKey.currentState!.validate()) {
                                 ShopLoginCubit.get(context).userLogin(
                                   email: emailController.text,
@@ -173,10 +141,31 @@ class ShopLoginScreen extends StatelessWidget
                                 );
                               }
                             },
-                            text: 'login',
-                            isUpperCase: true,
-                            background: Colors.deepOrange
-                          ),
+                            suffix: ShopLoginCubit.get(context).suffix,
+                            isPassword: ShopLoginCubit.get(context).isPassword,
+                            label: 'Password',
+                            prefix: Icons.lock_outline,
+                            suffixPressed: () {
+                              ShopLoginCubit.get(context)
+                                  .changePasswordVisibility();
+                            }),
+                        SizedBox(
+                          height: 30.0,
+                        ),
+                        ConditionalBuilder(
+                          condition: state is! ShopLoginLoadingState,
+                          builder: (context) => defaultButton(
+                              function: () {
+                                if (formKey.currentState!.validate()) {
+                                  ShopLoginCubit.get(context).userLogin(
+                                    email: emailController.text,
+                                    password: passwordController.text,
+                                  );
+                                }
+                              },
+                              text: 'login',
+                              isUpperCase: true,
+                              background: Colors.deepOrange),
                           fallback: (context) =>
                               Center(child: CircularProgressIndicator()),
                         ),
@@ -192,11 +181,10 @@ class ShopLoginScreen extends StatelessWidget
                             defaultTextButton(
                               function: () {
                                 Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ShopRegisterScreen()
-                                  )
-                                );
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            ShopRegisterScreen()));
                               },
                               text: 'register',
                             ),

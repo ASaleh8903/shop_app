@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../Model/categories_model/categories_model.dart';
+
+import '../../../Model/shop_app/categories_model/categories_model.dart';
 import '../../../Shared/components/components.dart';
 import '../../../layout/shop_app/cubit/cubit.dart';
 import '../../../layout/shop_app/cubit/state.dart';
