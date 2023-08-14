@@ -1,30 +1,39 @@
-class ShopLoginModel
-{
-   bool? status;
-   String? message;
-   UserData? data;
-
-  ShopLoginModel.fromJson(Map<String, dynamic> json)
-  {
+class ShopLoginModel {
+  late bool status;
+  late String message;
+  UserData? data;
+  ShopLoginModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = (json['data'] != null ? UserData.fromJson(json['data']) : null)!;
+
+    // data = json['data'];
+    // data == null ? null : UserData.fromJson(json['data']);
+    //data = ((json['data'] = UserData.fromJson(json['data'])));
+    data = json['data'] != null ? UserData.fromJson(json['data']) : null;
+    // json['data'] == null ? null : UserData.fromJson(json['data']);
   }
 }
 
-class UserData
-{
-  int? id;
+class UserData {
+  late int id;
   String? name;
-  String? email;
-  String? phone;
-  String? image;
-  int? points;
-  int? credit;
-  String? token;
-
-  UserData.fromJson(Map<String, dynamic> json)
-  {
+  late String email;
+  late String phone;
+  late String image;
+  late int points;
+  late int credit;
+  late String token;
+  UserData(
+    this.id,
+    this.name,
+    this.email,
+    this.phone,
+    this.image,
+    this.points,
+    this.credit,
+    this.token,
+  );
+  UserData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     email = json['email'];

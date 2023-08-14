@@ -3,7 +3,6 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 import '../../../Model/shop_app/categories_model/categories_model.dart';
 import '../../../Model/shop_app/home_model/home_model.dart';
 import '../../../Shared/components/components.dart';
@@ -11,28 +10,36 @@ import '../../../Shared/styles/colors.dart';
 import '../../../layout/shop_app/cubit/cubit.dart';
 import '../../../layout/shop_app/cubit/state.dart';
 
-
 class ProductsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ShopCubit, ShopStates>(
-      listener: (context, state) {},
-        builder: (context, state) {
-          return ConditionalBuilder(
-            condition: ShopCubit.get(context).homeModel != null &&
-                ShopCubit.get(context).categoriesModel != null,
-            builder: (context) => builderWidget(ShopCubit.get(context).homeModel!,
-                ShopCubit.get(context).categoriesModel!, context),
-            fallback: (context) => Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        },
+      listener: (context, state) {
+        if (state is ShopSuccessChangeFavoritesState) {
+          if (!state.model.status) {
+            showToast(
+              text: state.model.message,
+              state: ToastState.ERROR,
+            );
+          }
+        }
+      },
+      builder: (context, state) {
+        return ConditionalBuilder(
+          condition: ShopCubit.get(context).homeModel != null &&
+              ShopCubit.get(context).categoriesModel != null,
+          builder: (context) => builderWidget(ShopCubit.get(context).homeModel!,
+              ShopCubit.get(context).categoriesModel!, context),
+          fallback: (context) => Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
     );
   }
 
   Widget builderWidget(
-      HomeModel model, CategoriesModel categoriesModel, context) =>
+          HomeModel model, CategoriesModel categoriesModel, context) =>
       SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Column(
@@ -42,11 +49,11 @@ class ProductsScreen extends StatelessWidget {
               items: model.data?.banners
                   .map(
                     (e) => Image(
-                  image: NetworkImage('${e.image}'),
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                ),
-              )
+                      image: NetworkImage('${e.image}'),
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    ),
+                  )
                   .toList(),
               options: CarouselOptions(
                 height: 200,
@@ -122,7 +129,7 @@ class ProductsScreen extends StatelessWidget {
                 childAspectRatio: 1 / 1.80,
                 children: List.generate(
                   model.data!.products.length,
-                      (index) =>
+                  (index) =>
                       buildGridProduct(model.data!.products[index], context),
                 ),
               ),
@@ -132,120 +139,120 @@ class ProductsScreen extends StatelessWidget {
       );
 
   Widget buildCategoryItem(DataModel model) => Stack(
-    alignment: AlignmentDirectional.bottomCenter,
-    children: [
-      Image(
-        image: NetworkImage('${model.image}'),
-        height: 100.0,
-        width: 100.0,
-        fit: BoxFit.cover,
-      ),
-      Container(
-        color: Colors.black.withOpacity(
-          .8,
-        ),
-        width: 100.0,
-        child: Text(
-          '${model.name}',
-          textAlign: TextAlign.center,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            color: Colors.white,
+        alignment: AlignmentDirectional.bottomCenter,
+        children: [
+          Image(
+            image: NetworkImage('${model.image}'),
+            height: 100.0,
+            width: 100.0,
+            fit: BoxFit.cover,
           ),
-        ),
-      ),
-    ],
-  );
+          Container(
+            color: Colors.black.withOpacity(
+              .8,
+            ),
+            width: 100.0,
+            child: Text(
+              '${model.name}',
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      );
 
   Widget buildGridProduct(ProductModel model, context) => Container(
-    color: Colors.white,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Stack(
-          alignment: AlignmentDirectional.bottomStart,
+        color: Colors.white,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image(
-              image: NetworkImage('${model.image}'),
-              width: double.infinity,
-              height: 200.0,
-            ),
-            if (model.discount != 0)
-              Container(
-                color: Colors.red,
-                padding: EdgeInsets.symmetric(
-                  horizontal: 5.0,
+            Stack(
+              alignment: AlignmentDirectional.bottomStart,
+              children: [
+                Image(
+                  image: NetworkImage('${model.image}'),
+                  width: double.infinity,
+                  height: 200.0,
                 ),
-                child: Text(
-                  'DISCOUNT',
-                  style: TextStyle(
-                    fontSize: 8.0,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${model.name}',
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 14.0,
-                  height: 1.3,
-                ),
-              ),
-              Row(
-                children: [
-                  Text(
-                    '${model.price.round()}',
-                    style: TextStyle(
-                      fontSize: 12.0,
-                      color: defaultColor,
+                if (model.discount != 0)
+                  Container(
+                    color: Colors.red,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 5.0,
                     ),
-                  ),
-                  SizedBox(
-                    width: 5.0,
-                  ),
-                  if (model.discount != 0)
-                    Text(
-                      '${model.oldPrice.round()}',
+                    child: Text(
+                      'DISCOUNT',
                       style: TextStyle(
-                        fontSize: 10.0,
-                        color: Colors.grey,
-                        decoration: TextDecoration.lineThrough,
-                      ),
-                    ),
-                  Spacer(),
-                  IconButton(
-                    onPressed: () {
-                      ShopCubit.get(context).changeFavorites(model.id!);
-                      print(model.id);
-                    },
-                    icon: CircleAvatar(
-                      radius: 15.0,
-                      child: Icon(
-                        Icons.favorite_border,
-                        size: 14.0,
+                        fontSize: 8.0,
                         color: Colors.white,
                       ),
-                      backgroundColor:
-                      ShopCubit.get(context).favorites[model.id]!
-                          ? defaultColor
-                          : Colors.grey,
                     ),
+                  ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${model.name}',
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      height: 1.3,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        '${model.price.round()}',
+                        style: TextStyle(
+                          fontSize: 12.0,
+                          color: defaultColor,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 5.0,
+                      ),
+                      if (model.discount != 0)
+                        Text(
+                          '${model.oldPrice.round()}',
+                          style: TextStyle(
+                            fontSize: 10.0,
+                            color: Colors.grey,
+                            decoration: TextDecoration.lineThrough,
+                          ),
+                        ),
+                      Spacer(),
+                      IconButton(
+                        onPressed: () {
+                          ShopCubit.get(context).changeFavoritesData(model.id!);
+                          print(model.id);
+                        },
+                        icon: CircleAvatar(
+                          radius: 15.0,
+                          child: Icon(
+                            Icons.favorite_border,
+                            size: 14.0,
+                            color: Colors.white,
+                          ),
+                          backgroundColor:
+                              ShopCubit.get(context).favorites[model.id]!
+                                  ? defaultColor
+                                  : Colors.grey,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ],
-    ),
-  );
+      );
 }
